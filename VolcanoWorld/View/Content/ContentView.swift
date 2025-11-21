@@ -1,6 +1,7 @@
 //
-//  RootView.swift
+//  ContentView.swift
 //  VolcanoWorld
+//
 
 import SwiftUI
 
@@ -8,29 +9,28 @@ struct ContentView: View {
     @StateObject private var themeStore = ThemeStore()
     @StateObject private var rewards = RewardsManager()
     @StateObject private var volcanoes = VolcanoManager()
-    @StateObject private var state = AppStateManager()
-    @StateObject private var fcmManager = FcmTokenManager.shared
+    @StateObject private var manager = AppStateManager()
         
     var body: some View {
         Group {
-            switch state.appState {
-            case .first:
+            switch manager.appState {
+            case .request:
                 LoadingView()
-            case .second:
-                if let url = state.webManager.volcanoUrl {
-                    WebViewManager(url: url, webManager: state.webManager)
-                } else if let fcmToken = fcmManager.fcmToken {
-                    WebViewManager(
-                        url: NetworkManager.getInitialURL(fcmToken: fcmToken),
-                        webManager: state.webManager
+                
+            case .support:
+                if let url = manager.networkManager.gameURL {
+                    WKWebViewManager(
+                        url: url,
+                        webManager: manager.networkManager
                     )
                 } else {
-                    WebViewManager(
+                    WKWebViewManager(
                         url: NetworkManager.initialURL,
-                        webManager: state.webManager
+                        webManager: manager.networkManager
                     )
                 }
-            case .final:
+                
+            case .loading:
                 MainTabBar()
                     .environmentObject(themeStore)
                     .environmentObject(rewards)
@@ -39,7 +39,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            state.stateCheck()
+            manager.stateRequest()
         }
     }
 }

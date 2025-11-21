@@ -13,9 +13,5 @@
 		<string>Inter_18pt-SemiBold.ttf</string>
 		<string>JockeyOne-Regular.ttf</string>
 	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 </dict>
 </plist>
